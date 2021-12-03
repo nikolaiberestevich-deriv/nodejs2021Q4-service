@@ -2,8 +2,7 @@ const users=[]
 
 const getAll=()=>users
 ;
-const getById = async (id) => 
-  users.filter(user=>user.id===id)
+const getById =  (id) => users.find(user=>user.id===id)
   
 const addUser = async ({id,name,password,login}) => 
  {
@@ -11,5 +10,6 @@ const addUser = async ({id,name,password,login}) =>
    Promise.resolve({id,name,login,password})
   }
 ;
+
 
 module.exports = { getAll,getById,addUser };

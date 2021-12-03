@@ -5,15 +5,37 @@ const usersService = require('./user.service');
 
 router.route('/').get(async (req, res) => {
   const users = await usersService.getAll();
-  // map user fields to exclude secret fields like "password"
-  res.json(users.map(User.toResponse));
+  const usersArray=users.map(User.toResponse)
+  res.writeHead(200, {
+    'Content-Type': '/json/'})
+  res.end(JSON.stringify( usersArray))
+});
+
+router.route('/:id').get(async (req, res) =>{try {
+  console.log("req.params.id=",req.params.id);
+
+  const {id} = req.params
+
+  console.log("id",id)
+  console.log("req.body",req.body)
+  const user= usersService.getUserById(id);
+  console.log("user",user)
+  const responseUser = {id: user.id,name:user.name,login:user.login}
+ console.log("responseUser",responseUser)
+  res.writeHead(200, {
+    'Content-Type': '/json/',
+} )
+res.end(JSON.stringify( responseUser))
+}catch{
+  res.writeHead(400);
+  res.end(JSON.stringify({ message:" server can't find user" }));
+}
 });
 
 router.route('/').post(async (req, res) =>{try {
-  console.log("req.body=",req.body);
-  const {login,password,name} =req.body
 
-   const newUserWithID =User.createUser(name,login,password)
+  const {login,password,name} =req.body
+  const newUserWithID =User.createUser(name,login,password)
    
     usersService.addUser({
       id:newUserWithID.id,
